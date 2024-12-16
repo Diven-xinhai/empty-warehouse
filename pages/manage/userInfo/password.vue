@@ -1,9 +1,7 @@
 <script setup lang="tsx">
-import type { Swiper } from "swiper";
 definePageMeta({
   layout: 'manage',
 })
-
 </script>
 
 <template>

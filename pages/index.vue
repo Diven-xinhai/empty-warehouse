@@ -1,5 +1,4 @@
 <script setup lang="tsx">
-import type { Swiper } from "swiper";
 
 </script>
 

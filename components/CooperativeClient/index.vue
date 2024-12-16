@@ -1,36 +1,5 @@
-<template>
-  <div class="cooperative-client lg:flex hidden" relative>
-    <NuxtImg src="images/home/bg1.gif" loading="lazy" absolute left="50%" class="-translate-x-1/2"/>
-    <div relative z="2">
-      <p data-aos="fade-right" class="title">合作客户</p>
-      <p data-aos="fade-right" class="sub-title">Cooperative merchant</p>
-
-      <div class="swiper-box">
-        <AppInfiniteScrolling
-          :list="list"
-          key-name="url"
-          :show-count="11"
-          :space="25"
-        />
-      </div>
-    </div>
-  </div>
-  <div class="lg:hidden block mb-40px">
-    <div class='text-center mb-40px'>
-      <div class='text-18px'>合作客户</div>
-      <div class='text-14px text-#747679'>Cooperative merchant</div>
-    </div>
-    <div class="grid grid-cols-4 gap-10px px-10px box-border">
-      <NuxtImg
-        v-for="item in list" w-full :key="item.id" :src="item.url" loading="lazy"
-        border="1px dashed #cbcbcc"
-      ></NuxtImg>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import AppInfiniteScrolling from "@/components/AppInfiniteScrolling/index.vue";
+import AppInfiniteScrolling from '@/components/AppInfiniteScrolling/index.vue'
 
 const list = [
   {
@@ -81,8 +50,47 @@ const list = [
     id: 12,
     url: 'images/home/img-client12.png',
   },
-];
+]
 </script>
+
+<template>
+  <div class="cooperative-client lg:flex hidden" relative>
+    <NuxtImg src="images/home/bg1.gif" loading="lazy" absolute left="50%" class="-translate-x-1/2" />
+    <div relative z="2">
+      <p data-aos="fade-right" class="title">
+        合作客户
+      </p>
+      <p data-aos="fade-right" class="sub-title">
+        Cooperative merchant
+      </p>
+
+      <div class="swiper-box">
+        <AppInfiniteScrolling
+          :list="list"
+          key-name="url"
+          :show-count="11"
+          :space="25"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="lg:hidden block mb-40px">
+    <div class="text-center mb-40px">
+      <div class="text-18px">
+        合作客户
+      </div>
+      <div class="text-14px text-#747679">
+        Cooperative merchant
+      </div>
+    </div>
+    <div class="grid grid-cols-4 gap-10px px-10px box-border">
+      <NuxtImg
+        v-for="item in list" :key="item.id" w-full :src="item.url" loading="lazy"
+        border="1px dashed #cbcbcc"
+      />
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .cooperative-client {

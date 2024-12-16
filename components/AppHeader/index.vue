@@ -1,71 +1,57 @@
 <script setup lang="tsx">
-import CryptoJS from "crypto-js";
-import { setLocalStore } from "~/utils/common";
-
 interface MenuItem {
-  name: string;
-  url: string;
-  isDir?: boolean;
-  children?: MenuItem[];
+  name: string
+  url: string
+  isDir?: boolean
+  children?: MenuItem[]
 }
 const menus = ref<MenuItem[]>([
   {
-    name: "首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页",
-    url: "/",
+    name: '首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页',
+    url: '/',
   },
   {
-    name: "政策资讯",
-    url: "/1",
+    name: '政策资讯',
+    url: '/1',
   },
   {
-    name: "供需对接",
-    url: "/2",
+    name: '供需对接',
+    url: '/2',
   },
   {
-    name: "揭榜挂帅",
-    url: "/3",
+    name: '揭榜挂帅',
+    url: '/3',
   },
   {
-    name: "基础设施",
-    url: "/4",
+    name: '基础设施',
+    url: '/4',
   },
   {
-    name: "公共服务",
-    url: "/5",
+    name: '公共服务',
+    url: '/5',
   },
-]);
+])
 
-const appMenus = ref<any[]>([])
-onMounted(() => {
-  
-})
-
-const route = useRoute();
-
-
-onMounted(() => {
-});
-
+const route = useRoute()
 // 跳转子菜单页面时，关闭子菜单列表
-const hiddenMenuChildren = ref(false);
-const router = useRouter();
+const router = useRouter()
 function toPage(url: string) {
-  if (/^http(s)?:\/\//.test(url)) {
-    return window.open(url, url);
+  if (/^https?:\/\//.test(url)) {
+    return window.open(url, url)
   }
 
-  router.push(url);
+  router.push(url)
 }
 // --- mobole logic ---
-const openMenu = ref(false);
-const expandMenuURL = ref("");
+const openMenu = ref(false)
+const expandMenuURL = ref('')
 
 function RenderMobileMenu({
   menus,
   index = 1,
 }: {
-  menus: MenuItem[];
-  index?: number;
+  menus: MenuItem[]
+  index?: number
 }) {
   return (
     <div>
@@ -74,13 +60,12 @@ function RenderMobileMenu({
           <>
             <div
               style={`padding-left: ${index * 20}px; color: ${
-                item.url === route.path ? "#518ffa" : "black"
+                item.url === route.path ? '#518ffa' : 'black'
               }`}
               class="
             leading-40px text-14px pr-20px box-border border-0 border-b-1px border-solid border-#dcdfe6
-            flex items-center justify-between 
+            flex items-center justify-between
           "
-              onClick={() => mobileToLink(item, item.name)}
             >
               <div v-html={item.name}></div>
               {item.children && <div class="i-tabler:chevron-right"></div>}
@@ -88,25 +73,25 @@ function RenderMobileMenu({
             {item.children && (
               <div
                 class={
-                  expandMenuURL.value.startsWith(item.url) ? "block" : "hidden"
+                  expandMenuURL.value.startsWith(item.url) ? 'block' : 'hidden'
                 }
               >
                 {RenderMobileMenu({ menus: item.children, index: index + 1 })}
               </div>
             )}
           </>
-        );
+        )
       })}
     </div>
-  );
+  )
 }
 
 // --- login logic ---
 const userInfo = ref<{
-  nick_name: string;
-  access_token: string;
-  tenant_id: string;
-}>();
+  nick_name: string
+  access_token: string
+  tenant_id: string
+}>()
 function handleLogout() {
   // request("/iot-auth/oauth/logout", {
   //   headers: {
@@ -143,11 +128,10 @@ function handleLogout() {
         src="images/common/logo.png"
         w="full"
         class="light-logo"
-      ></NuxtImg>
-     
+      />
     </div>
     <div w="55%" flex>
-      <div w-full flex="1" v-for="item in menus" :key="item.url" class="menu">
+      <div v-for="item in menus" :key="item.url" w-full flex="1" class="menu">
         <div
           text="14px center"
           h-full
@@ -157,14 +141,14 @@ function handleLogout() {
           border="0 solid #518ffa"
           box-border
           :class="
-            $route.path.startsWith(item.url === '/' ? '_' : item.url) ||
-            $route.path === item.url
+            $route.path.startsWith(item.url === '/' ? '_' : item.url)
+              || $route.path === item.url
               ? 'border-b-4px text-#518ffa'
               : ''
           "
           @click="!item.isDir && toPage(item.url)"
           v-html="item.name"
-        ></div>
+        />
       </div>
     </div>
     <div min-w="10%" class="flex items-center justify-center h-60px text-white">
@@ -196,15 +180,16 @@ function handleLogout() {
     box-border
     class="lg:hidden block bg-#0070ff"
   >
-    <NuxtImg src="images/common/logo2.png" @click="$router.push('/')"></NuxtImg>
+    <NuxtImg src="images/common/logo2.png" @click="$router.push('/')" />
     <div flex="~ items-center" text="white 14px">
       <div v-if="userInfo" flex="~ gap-10px" mr="20px">
         <div>Hey, {{ userInfo.nick_name }}</div>
-        <div @click="handleLogout" cursor-pointer>退出登录</div>
+        <div cursor-pointer @click="handleLogout">
+          退出登录
+        </div>
       </div>
       <div
         v-else
-        @click="loginModalRef?.openLoginModal"
         cursor-pointer
         mr="20px"
       >
@@ -215,7 +200,7 @@ function handleLogout() {
         class="i-tabler:menu-2"
         text="white 25px"
         @click="openMenu = true"
-      ></div>
+      />
     </div>
   </div>
 
@@ -235,14 +220,13 @@ function handleLogout() {
         src="images/common/logo.png"
         w="150px"
         @click="$router.push('/')"
-      ></NuxtImg>
-      <div class="i-tabler:x text-25px" @click="openMenu = false"></div>
+      />
+      <div class="i-tabler:x text-25px" @click="openMenu = false" />
     </div>
     <div px="20px" box-border>
       <RenderMobileMenu :menus="menus" />
     </div>
   </div>
-
 </template>
 
 <style lang="scss" scoped>

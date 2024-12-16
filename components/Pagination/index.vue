@@ -12,16 +12,19 @@ const pageList = computed(() => {
     for (let i = 1; i <= pages.value; i++) {
       result.push(i)
     }
-  } else {
+  }
+  else {
     if (currentPage.value <= 2) {
       for (let i = 1; i <= 5; i++) {
         result.push(i)
       }
-    } else if (currentPage.value >= pages.value - 1) {
+    }
+    else if (currentPage.value >= pages.value - 1) {
       for (let i = pages.value - 4; i <= pages.value; i++) {
         result.push(i)
       }
-    } else {
+    }
+    else {
       for (let i = currentPage.value - 2; i <= currentPage.value + 2; i++) {
         result.push(i)
       }
@@ -33,20 +36,27 @@ const pageList = computed(() => {
 
 <template>
   <div flex="~ items-center">
-    <div class="cursor-pointer text-#666666 hover:text-#4080f9" @click="currentPage = 1">首页</div>
+    <div class="cursor-pointer text-#666666 hover:text-#4080f9" @click="currentPage = 1">
+      首页
+    </div>
     <div mx="10px" flex gap="5px">
-      <div v-if='currentPage > 3' w="30px" h="30px" text="center #666" leading="30px">...</div>
+      <div v-if="currentPage > 3" w="30px" h="30px" text="center #666" leading="30px">
+        ...
+      </div>
       <div
         v-for="item in pageList" :key="item"
         w="30px" h="30px" text="center #666" leading="30px" cursor="pointer" class="hover:text-#4080f9"
-        @click="currentPage = item"
         :class="currentPage === item ? '!text-#4080f9' : ''"
+        @click="currentPage = item"
       >
         {{ item }}
       </div>
-      <div v-if='currentPage < pages - 2' w="30px" h="30px" text="center #666" leading="30px">...</div>
+      <div v-if="currentPage < pages - 2" w="30px" h="30px" text="center #666" leading="30px">
+        ...
+      </div>
     </div>
-    <div class="cursor-pointer text-#666666 hover:text-#4080f9" @click="currentPage = Math.floor(listTotal / listSize)">末页
+    <div class="cursor-pointer text-#666666 hover:text-#4080f9" @click="currentPage = Math.floor(listTotal / listSize)">
+      末页
     </div>
   </div>
 </template>

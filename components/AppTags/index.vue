@@ -1,3 +1,51 @@
+<script setup lang="ts">
+import type { TabPaneName, TabsPaneContext } from 'element-plus'
+
+const route = useRoute()
+const router = useRouter()
+const isCollapse = useIsCollapse()
+const tags = useTags()
+const editableTabsValue = ref('')
+const { roleMenu } = useRoleMenu()
+function removeTab(targetName: TabPaneName) {
+  tags.value = tags.value.filter(tab => tab.key !== String(targetName))
+  if (editableTabsValue.value === String(targetName)) {
+    router.push(tags.value[tags.value.length - 1].path!)
+  }
+  editableTabsValue.value = tags.value[tags.value.length - 1].key
+  sessionStorage.setItem('tags', JSON.stringify(tags.value))
+}
+
+function changeTab(pane: TabsPaneContext) {
+  const key = pane.paneName
+  const obj = tags.value.find(tag => tag.key === key)
+  if (obj && obj.path) {
+    router.push(obj.path)
+  }
+}
+
+watch(
+  () => route.path,
+  (newValue) => {
+    const obj = findMenuItemByPath(roleMenu.value || [], newValue)
+    if (obj) {
+      editableTabsValue.value = obj.key
+    }
+  },
+  { immediate: true, deep: true },
+)
+
+onMounted(() => {
+  const storTags = sessionStorage.getItem('tags')
+  if (storTags) {
+    tags.value = JSON.parse(storTags)
+  }
+  else if (roleMenu.value) {
+    tags.value.push(roleMenu.value[0])
+  }
+})
+</script>
+
 <template>
   <div
     class="tags-box-style bg-#fff h-45px pl-15px pr-15px box-border flex items-center border-b border-b-solid border-b-#e5e5e5"
@@ -17,61 +65,11 @@
           :key="item.name"
           :label="item.name"
           :name="item.key"
-        >
-        </el-tab-pane>
+        />
       </el-tabs>
     </ElScrollbar>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { TabPaneName, TabsPaneContext } from "element-plus";
-
-const route = useRoute();
-const router = useRouter();
-const isCollapse = useIsCollapse();
-const tags = useTags();
-const { userInfo } = useUserInfo();
-const editableTabsValue = ref("");
-const { roleMenu } = useRoleMenu();
-const removeTab = (targetName: TabPaneName) => {
-  tags.value = tags.value.filter((tab) => tab.key !== String(targetName));
-  if (editableTabsValue.value === String(targetName)) {
-    router.push(tags.value[tags.value.length - 1].path!);
-  }
-  editableTabsValue.value = tags.value[tags.value.length - 1].key;
-  sessionStorage.setItem("tags", JSON.stringify(tags.value));
-};
-
-function changeTab(pane: TabsPaneContext, ev: Event) {
-  const key = pane.paneName;
-  const obj = tags.value.find((tag) => tag.key === key);
-  if (obj && obj.path) {
-    router.push(obj.path);
-  }
-}
-
-watch(
-  () => route.path,
-  (newValue) => {
-    const obj = findMenuItemByPath(roleMenu.value, newValue);
-    if (obj) {
-      editableTabsValue.value = obj.key;
-    }
-  },
-  { immediate: true, deep: true }
-);
-
-onMounted(() => {
-  const storTags = sessionStorage.getItem("tags");
-  if (storTags) {
-    tags.value = JSON.parse(storTags);
-  } else {
-    tags.value.push(roleMenu.value[0])
-    const detail = userInfo.value;
-  }
-});
-</script>
 
 <style lang="scss">
 .tags-box-style-false {

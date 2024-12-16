@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 const headerRef = ref()
 provide('app-to-link', (url: string, name: string) => {
@@ -7,7 +6,7 @@ provide('app-to-link', (url: string, name: string) => {
 </script>
 
 <template>
-  <AppHeader ref="headerRef"></AppHeader>
+  <AppHeader ref="headerRef" />
   <slot />
-  <AppFooter></AppFooter>
+  <AppFooter />
 </template>

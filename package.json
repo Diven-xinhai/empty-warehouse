@@ -1,8 +1,8 @@
 {
   "name": "winglink-iip-website",
-  "private": true,
   "type": "module",
   "version": "1.2.0",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "test": "nuxt build --dotenv .env.test",
@@ -11,7 +11,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "release": "bumpp -c 'chore: release v' -p --no-tag deploy/website_docker_deploy.sh package.json"
+    "release": "bumpp -c 'chore: release v' -p --no-tag deploy/website_docker_deploy.sh package.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@popperjs/core": "npm:@sxzz/popperjs-es@^2.11.7",
@@ -28,6 +30,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^3.12.0",
     "@element-plus/nuxt": "^1.0.9",
     "@iconify-json/tabler": "^1.1.105",
     "@iconify/utils": "^2.1.22",
@@ -39,6 +42,7 @@
     "@unocss/nuxt": "^0.58.5",
     "bumpp": "^9.8.1",
     "element-plus": "^2.7.3",
+    "eslint": "^9.17.0",
     "nuxt-swiper": "^1.2.2",
     "sass": "^1.70.0"
   }

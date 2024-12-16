@@ -1,5 +1,5 @@
-import { defineConfig, presetAttributify, presetUno, presetIcons, transformerVariantGroup, presetWebFonts } from 'unocss'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
+import { defineConfig, presetAttributify, presetIcons, presetUno, presetWebFonts, transformerVariantGroup } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -11,30 +11,30 @@ export default defineConfig({
         'vertical-align': 'middle',
       },
       collections: {
-        'custom': FileSystemIconLoader('./assets/icons')
-      }
+        custom: FileSystemIconLoader('./assets/icons'),
+      },
     }),
-    presetWebFonts()
+    presetWebFonts(),
   ],
   transformers: [
-    transformerVariantGroup()
+    transformerVariantGroup(),
   ],
   safelist: ['z-9999!'],
   theme: {
     colors: {
-      primary: '#0054A3',
-      title: '#171B25',
+      'primary': '#0054A3',
+      'title': '#171B25',
       'sub-title': '#6D7278',
-      'desc': '#5E5E5E'
-    }
+      'desc': '#5E5E5E',
+    },
   },
   rules: [
     [/^line-clamp-(\d)/, ([, d]) => ({
-      overflow: 'hidden',
+      'overflow': 'hidden',
       'text-overflow': 'ellipsis',
       'display': '-webkit-box',
       '-webkit-line-clamp': d,
-      '-webkit-box-orient': 'vertical'
-    })]
-  ]
+      '-webkit-box-orient': 'vertical',
+    })],
+  ],
 })

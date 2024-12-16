@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AOS from "aos"
+import AOS from 'aos'
 
 onMounted(() => {
   AOS.init({
-    easing: "ease-out",
+    easing: 'ease-out',
     duration: 800,
   })
 

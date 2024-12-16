@@ -1,15 +1,31 @@
+<script setup lang="ts">
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+
+const isCollapse = useIsCollapse()
+
+const loading = ref(false)
+
+watchEffect(() => {
+  loading.value = true
+  const timer = setTimeout(() => {
+    loading.value = false
+  }, 500) // 模拟加载时间
+  return () => clearTimeout(timer)
+})
+</script>
+
 <template>
   <ElConfigProvider :locale="zhCn">
     <div
       v-loading.fullscreen.lock="loading"
       class="loading-overlay"
       element-loading-text="Loading..."
-    ></div>
-    <div class="flex justify-between h-100vh overflow-hidden" v-if="!loading">
-      <AppMenu></AppMenu>
+    />
+    <div v-if="!loading" class="flex justify-between h-100vh overflow-hidden">
+      <AppMenu />
       <div class="bg-#EFF4F6">
-        <AppTopHeader></AppTopHeader>
-        <AppTags></AppTags>
+        <AppTopHeader />
+        <AppTags />
         <div
           class="overflow-hidden bg-#EFF4F6 content-wrapper"
           :class="isCollapse ? 'content-wrapper-true' : 'content-wrapper-false'"
@@ -23,21 +39,6 @@
   </ElConfigProvider>
 </template>
 
-<script setup lang="ts">
-import zhCn from "element-plus/es/locale/lang/zh-cn";
-
-const isCollapse = useIsCollapse();
-
-const loading = ref(false);
-
-watchEffect(() => {
-  loading.value = true;
-  const timer = setTimeout(() => {
-    loading.value = false;
-  }, 500); // 模拟加载时间
-  return () => clearTimeout(timer);
-});
-</script>
 <style scoped lang="scss">
 .content-wrapper {
   height: calc(100vh - 95px);
