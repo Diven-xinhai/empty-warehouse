@@ -5,7 +5,6 @@
 <template>
   <div class="pt-60px">
     我是首页
-    <UButton>Button 按钮</UButton>
   </div>
 </template>
 
