@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/manage/*': { ssr: false },
   },
-  modules: ['nuxt-swiper', '@unocss/nuxt', '@nuxt/image', '@element-plus/nuxt'],
+  modules: ['nuxt-swiper', '@unocss/nuxt', '@nuxt/image', '@element-plus/nuxt', '@nuxt/ui'],
   image: {
     quality: 80,
   },

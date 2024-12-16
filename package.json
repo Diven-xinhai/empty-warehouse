@@ -16,6 +16,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@nuxt/ui": "2.20.0",
     "@popperjs/core": "npm:@sxzz/popperjs-es@^2.11.7",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
@@ -27,7 +28,8 @@
     "nuxt": "^3.10.1",
     "swiper": "^11.0.6",
     "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.0",
