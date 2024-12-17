@@ -19,18 +19,12 @@ const menus = ref<MenuItem[]>([
     url: '/2',
   },
   {
-    name: '揭榜挂帅',
+    name: '成果发布',
     url: '/3',
   },
-  {
-    name: '基础设施',
-    url: '/4',
-  },
-  {
-    name: '公共服务',
-    url: '/5',
-  },
 ])
+
+
 
 const route = useRoute()
 // 跳转子菜单页面时，关闭子菜单列表
@@ -92,6 +86,10 @@ const userInfo = ref<{
   access_token: string
   tenant_id: string
 }>()
+
+onMounted(() => {
+  userInfo.value = getLocalStore('userInfo')
+})
 function handleLogout() {
   // request("/iot-auth/oauth/logout", {
   //   headers: {
@@ -115,53 +113,62 @@ function handleLogout() {
     fixed
     left="0"
     top="0"
-    h="60px"
+    h="70px"
     pl="20px"
     box-border
     z="999"
     w-full
     flex="~ items-center justify-between"
-    class="group bg-white bg-transparent !lg:flex !hidden"
+    class="group bg-#649AF6 !lg:flex !hidden"
   >
-    <div w="15%" @click="$router.push('/')">
-      <NuxtImg
-        src="images/common/logo.png"
-        w="full"
-        class="light-logo"
-      />
+    <div w="25%" class="color-#fff font-bold text-16px" @click="$router.push('/')">
+      济南市都市圈产业协作创新发展公共服务平台
     </div>
-    <div w="55%" flex>
+    <div w="50%" max-w="500px" flex>
       <div v-for="item in menus" :key="item.url" w-full flex="1" class="menu">
         <div
-          text="14px center"
+          text="16px center"
           h-full
           select="none"
-          leading="60px"
+          leading="70px"
           cursor-pointer
-          border="0 solid #518ffa"
+          border="0 solid #fff"
           box-border
-          :class="
-            $route.path.startsWith(item.url === '/' ? '_' : item.url)
-              || $route.path === item.url
-              ? 'border-b-4px text-#518ffa'
-              : ''
-          "
+          class="hover:border-b-4px text-#fff mx-15px"
+          :class="$route.path.startsWith(item.url === '/' ? '_' : item.url)
+            || $route.path === item.url
+            ? 'border-b-4px'
+            : ''"
           @click="!item.isDir && toPage(item.url)"
           v-html="item.name"
         />
       </div>
     </div>
-    <div min-w="10%" class="flex items-center justify-center h-60px text-white">
+    <div min-w="25%" class="flex items-center justify-end h-60px text-#fff">
       <div
         px="10px"
         mr="30px"
-        class="bg-#00BEFF h-full flex-1 flex items-center justify-center relative"
+        class="h-full flex-1 flex items-center justify-end relative text-14px"
       >
+        <div class="flex items-center mr-30px">
+          <div class="mr-10px">
+            济南
+          </div>
+          <div class=" cursor-pointer">
+            [切换城市]
+          </div>
+        </div>
         <div
+        v-if="!userInfo"
           cursor-pointer
-          class="flex items-center justify-center absolute top-0 left-0 right-0 bottom-0"
+          class="flex items-center justify-center"
+          @click="toPage('/manage/login')"
         >
-          登录
+          登录/注册
+        </div>
+        <div cursor-pointer
+        class="flex items-center justify-center">
+          {{ userInfo?.nick_name }}
         </div>
       </div>
     </div>
@@ -175,12 +182,14 @@ function handleLogout() {
     w-full
     z-1000
     flex="~ justify-between items-center"
-    h="60px"
+    h="70px"
     px="20px"
     box-border
     class="lg:hidden block bg-#0070ff"
   >
-    <NuxtImg src="images/common/logo2.png" @click="$router.push('/')" />
+    <div class="color-#fff w-70%">
+      济南市都市圈产业协作创新发展公共服务平台
+    </div>
     <div flex="~ items-center" text="white 14px">
       <div v-if="userInfo" flex="~ gap-10px" mr="20px">
         <div>Hey, {{ userInfo.nick_name }}</div>
@@ -193,7 +202,7 @@ function handleLogout() {
         cursor-pointer
         mr="20px"
       >
-        Hey, 登录
+        登录/注册
       </div>
 
       <div
@@ -215,12 +224,10 @@ function handleLogout() {
     class="lg:hidden block"
     :class="openMenu ? 'left-0' : '-left-100%'"
   >
-    <div h="60px" px="20px" box-border flex="~ items-center justify-between">
-      <NuxtImg
-        src="images/common/logo.png"
-        w="150px"
-        @click="$router.push('/')"
-      />
+    <div h="70px" px="20px" box-border flex="~ items-center justify-between">
+      <div>
+        济南市都市圈产业协作创新发展公共服务平台
+      </div>
       <div class="i-tabler:x text-25px" @click="openMenu = false" />
     </div>
     <div px="20px" box-border>

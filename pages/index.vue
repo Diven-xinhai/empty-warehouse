@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="pt-60px">
+  <div class="pt-70px">
     我是首页
   </div>
 </template>
