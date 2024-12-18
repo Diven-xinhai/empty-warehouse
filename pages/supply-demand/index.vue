@@ -145,8 +145,8 @@ const { requestList, supplyDemandList } = useSupplyDemandList()
         <div
           class="group relative overflow-hidden flex items-center justify-center mt-20px rounded-4px w-124px leading-44px text-white text-20px bg-[linear-gradient(90deg,#68A9FD_0%,#3A7BE1_100%)] cursor-pointer select-none"
         >
-          <span class="i-tabler:arrow-right absolute -left-50px group-hover:left-10px transition-all" />
-          发 布
+          <span class="i-tabler:arrow-right absolute -left-50px group-hover:left-20px transition-all" />
+          <span class="pl-0 group-hover:pl-10px inline-block transition-all">发 布</span>
         </div>
       </NuxtLink>
     </div>
