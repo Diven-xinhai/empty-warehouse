@@ -19,7 +19,13 @@ function handlePublish() {
     <div w="2xl:1400px xl:90% lg:full" class="mt-70px mx-auto">
       <div class="py-10px pl-40px box-border text-14px flex items-center gap-5px">
         <span class="i-tabler:home-filled" />
-        <span>首页</span> > <span>供需对接</span> > <span class="font-bold">{{ sceneType === 'demand' ? '需求发布' : '服务发布' }}</span>
+        <NuxtLink to="/" class="font-normal">
+          首页
+        </NuxtLink> >
+        <NuxtLink to="/supply-demand" class="font-normal">
+          供需对接
+        </NuxtLink> >
+        <span class="font-bold">{{ sceneType === 'demand' ? '需求发布' : '服务发布' }}</span>
       </div>
 
       <div class="bg-white px-60px py-40px box-border">

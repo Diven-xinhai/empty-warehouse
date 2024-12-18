@@ -179,7 +179,7 @@ const { requestList, supplyDemandList, loading } = useSupplyDemandList()
         </div>
       </div>
 
-      <div class="mt-48px flex items-center">
+      <div class="my-48px flex items-center">
         <div class="w-4px h-28px bg-#3F80E4 rounded-2px" />
         <div class="text-#030718 text-20px ml-16px">
           类型筛选
