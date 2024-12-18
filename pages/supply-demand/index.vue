@@ -94,14 +94,18 @@ function useSupplyDemandList() {
     image: string
     enterpriseName: string
   }
+
+  const loading = ref(false)
   const { data: supplyDemandList } = useAsyncData<SupplyDemandItem[]>(requestList, { default: () => [] })
 
   async function requestList() {
+    loading.value = true
     const url = `${import.meta.env.VITE_GLOB_API_URL}/demand/client/page`
     const res = await $fetch<{ data: PageResponse<any> }>(url, {
       method: 'POST',
       body: { current: 1, size: 10 },
     })
+    loading.value = false
     return res.data.records.map(item => ({
       id: item.id,
       title: item.demandName,
@@ -114,11 +118,12 @@ function useSupplyDemandList() {
   }
 
   return {
+    loading,
     requestList,
     supplyDemandList,
   }
 }
-const { requestList, supplyDemandList } = useSupplyDemandList()
+const { requestList, supplyDemandList, loading } = useSupplyDemandList()
 </script>
 
 <template>
@@ -141,7 +146,7 @@ const { requestList, supplyDemandList } = useSupplyDemandList()
       <div text="#030718 20px" class="mt-10px w-500px">
         我们致力于成为需求满足与合作桥梁的角色，为资源供需有效对接提供支持
       </div>
-      <NuxtLink to="/supply-demand/publish" class="hover:no-underline w-124px">
+      <NuxtLink to="/supply-demand/publish" class="hover:no-underline active:no-underline w-124px">
         <div
           class="group relative overflow-hidden flex items-center justify-center mt-20px rounded-4px w-124px leading-44px text-white text-20px bg-[linear-gradient(90deg,#68A9FD_0%,#3A7BE1_100%)] cursor-pointer select-none"
         >
@@ -166,9 +171,11 @@ const { requestList, supplyDemandList } = useSupplyDemandList()
         <div
           text="white"
           flex="~ items-center justify-center"
-          class="w-128px h-44px bg-[linear-gradient(90deg,#68A9FD_0%,#3A7BE1_100%)] cursor-pointer"
+          class="w-128px h-44px bg-[linear-gradient(90deg,#68A9FD_0%,#3A7BE1_100%)] cursor-pointer select-none"
+          @click="!loading && requestList()"
         >
           搜 索
+          <span v-if="loading" class="i-tabler:loader ml-10px animate-spin text-18px" />
         </div>
       </div>
 
