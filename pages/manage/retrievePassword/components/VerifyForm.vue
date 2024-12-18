@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import { reactive, ref } from 'vue'
+import { SmsType } from '~/enums/common';
 
 export interface FormData {
   phone: string
@@ -9,7 +10,7 @@ export interface FormData {
 
 // 添加 defineEmits
 const emit = defineEmits<{
-  'next-step': [FormData]
+  nextStep: [FormData]
 }>()
 const formRef = ref<FormInstance>()
 const formData = reactive<FormData>({
@@ -17,6 +18,7 @@ const formData = reactive<FormData>({
   verifyCode: '',
 })
 
+const isLoading = ref(false)
 // 倒计时相关
 const isCountingDown = ref(false)
 const countdown = ref(60)
@@ -34,31 +36,47 @@ const rules = {
 }
 
 // 获取验证码
-async function handleGetVerifyCode() {
+
+function startCountDown() {
+  isCountingDown.value = true
+  countdown.value = 60
+  const timer = setInterval(() => {
+    countdown.value--
+    countDownText.value = `${countdown.value}秒后重试`
+    if (countdown.value <= 0) {
+      clearInterval(timer)
+      isCountingDown.value = false
+      countDownText.value = '发送验证码'
+    }
+  }, 1000)
+}
+
+async function sendSmsCode() {
+  if (isLoading.value)
+    return
+
   try {
+    isLoading.value = true
     await formRef.value?.validateField('phone')
-    isCountingDown.value = true
-    countdown.value = 60
-
-    // 开始倒计时
-    const timer = setInterval(() => {
-      countdown.value--
-      countDownText.value = `${countdown.value}秒后重试`
-
-      if (countdown.value <= 0) {
-        clearInterval(timer)
-        isCountingDown.value = false
-        countDownText.value = '获取验证码'
-      }
-    }, 1000)
-
-    // TODO: 调用发送验证码接口
-    // await sendVerifyCode(formData.phone)
+    await request('/enterprise/sendSms', {
+      method: 'POST',
+      body: {
+        phone: formData.phone,
+        type: SmsType.FORGET_PASSWORD,
+      },
+    })
+    ElMessage.success('验证码已发送')
+    startCountDown()
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (error) {
-    console.error(error)
+    // 手机号验证失败
+  }
+  finally {
+    isLoading.value = false
   }
 }
+
 
 // 提交表单
 async function handleSubmit() {
@@ -67,8 +85,7 @@ async function handleSubmit() {
 
   try {
     await formRef.value.validate()
-    // TODO: 处理表单提交
-    emit('next-step', formData)
+    emit('nextStep', formData)
   }
   catch (error) {
     console.error('表单验证失败:', error)
@@ -102,9 +119,9 @@ async function handleSubmit() {
         />
         <el-button
           type="primary"
-          link
+          :loading="isLoading"
           :disabled="isCountingDown"
-          @click="handleGetVerifyCode"
+          @click="sendSmsCode"
         >
           {{ countDownText }}
         </el-button>

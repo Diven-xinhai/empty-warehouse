@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { FormData as ResetFormData } from './components/ResetPasswordForm.vue'
-import type { FormData as VerifyFormData } from './components/VerifyForm.vue'
 import StepIndicator from '@/components/AppSteps/index.vue'
 import { ref } from 'vue'
 import ResetPasswordForm from './components/ResetPasswordForm.vue'
@@ -8,9 +6,7 @@ import VerifyForm from './components/VerifyForm.vue'
 
 const currentStep = ref(1)
 
-function handleNextStep(formData: VerifyFormData | ResetFormData) {
-  // 处理下一步逻辑
-  console.log(formData)
+function handleNextStep() {
   currentStep.value++
 }
 </script>

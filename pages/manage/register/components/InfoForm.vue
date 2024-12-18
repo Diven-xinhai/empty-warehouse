@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules, UploadFile, UploadProps, UploadUserFile } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, QuestionFilled } from '@element-plus/icons-vue'
 import CryptoJS from 'crypto-js'
 import { reactive, ref } from 'vue'
 
-export interface RegisterForm {
+export interface InfoFormData {
   enterpriseType: string
   enterpriseName: string
   creditCode: string
@@ -36,13 +36,13 @@ interface RegionListItem {
 }
 
 const emit = defineEmits<{
-  'next-step': [RegisterForm]
+  nextStep: [InfoFormData]
 }>()
 const uploadUrl = `${
   import.meta.env.VITE_GLOB_API_URL
 }/hulk-resource/oss/endpoint/no-auth/put-file`
 const ruleFormRef = ref<FormInstance>()
-const form = reactive<RegisterForm>({
+const form = reactive<InfoFormData>({
   enterpriseType: '',
   enterpriseName: '',
   creditCode: '',
@@ -58,7 +58,35 @@ const form = reactive<RegisterForm>({
 const rules = reactive<FormRules>({
   enterpriseType: [{ required: true, message: '请选择单位企业类型', trigger: 'change' }],
   enterpriseName: [{ required: true, message: '请输入企业名称', trigger: 'blur' }],
-  creditCode: [{ required: true, message: '请输入统一社会信用代码', trigger: 'blur' }],
+  creditCode: [
+    { required: true, message: '请输入统一社会信用代码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (!value) {
+          callback()
+          return
+        }
+        const type = form.enterpriseType
+        const code = value.substring(0, 2)
+
+        const typeCodeMap: Record<string, string> = {
+          1: '91', // 企业
+          2: '92', // 个体工商户
+          3: '51', // 社会组织
+          4: '11', // 机关单位
+          5: '12', // 事业单位
+        }
+
+        if (type && type !== '0' && code !== typeCodeMap[type]) {
+          callback(new Error(`统一社会信用代码需以 ${typeCodeMap[type]} 开头`))
+        }
+        else {
+          callback()
+        }
+      },
+      trigger: 'blur',
+    },
+  ],
   organImg: [{ required: true, message: '请上传营业执照', trigger: 'change' }],
   legalPersonName: [{ required: true, message: '请输入法定代表人姓名', trigger: 'blur' }],
   legalPersonNum: [{ required: true, message: '请输入法定代表人身份证号', trigger: 'blur' }],
@@ -84,14 +112,13 @@ const regionList = ref<RegionListItem[]>([])
 async function submitForm(formEl: FormInstance | undefined) {
   if (!formEl)
     return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate((valid) => {
     if (valid) {
-      console.log('提交表单')
-      // TODO: 调用注册接口
-      emit('next-step', form)
-    }
-    else {
-      console.log('验证失败', fields)
+      if (!form.agreement) {
+        ElMessage.warning('请阅读并同意用户注册协议')
+        return
+      }
+      emit('nextStep', form)
     }
   })
 }
@@ -168,6 +195,18 @@ onMounted(() => {
           :value="item.value"
         />
       </el-select>
+      <div class="position-absolute right--28px top-5px">
+        <el-tooltip
+          class="box-item"
+          raw-content
+          content="<div>请根据提示选择相应的类型：</div><div>企业：以91开头</div><div>个体工商户：以92开头</div><div>社会组织：以51开头</div><div>机关单位：以11开头</div><div>事业单位：以12开头</div>"
+          placement="top-start"
+        >
+          <el-icon :size="22" color="#3F80E4">
+            <QuestionFilled />
+          </el-icon>
+        </el-tooltip>
+      </div>
     </el-form-item>
 
     <el-form-item label="企业名称：" prop="enterpriseName" required>

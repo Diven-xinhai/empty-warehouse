@@ -51,14 +51,13 @@ const rules = reactive<FormRules<RuleForm>>({
 async function submitForm(formEl: FormInstance | undefined) {
   if (!formEl)
     return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate((valid) => {
     if (valid) {
       const params = {
         username: ruleForm.username,
         password: CryptoJS.MD5(ruleForm.password).toString(),
         grant_type: ruleForm.grant_type,
       }
-      console.log('submit!')
       request('/hulk-auth/oauth/token', {
         method: 'POST',
         params,
@@ -71,7 +70,6 @@ async function submitForm(formEl: FormInstance | undefined) {
         },
       })
         .then((res) => {
-          console.log(res)
           setLocalStore({ name: 'token', content: res.access_token })
           setLocalStore({ name: 'userInfo', content: res })
           setLocalStore({ name: 'tenantId', content: res.tenant_id })
@@ -80,9 +78,6 @@ async function submitForm(formEl: FormInstance | undefined) {
         })
         .catch(() => {})
     }
-    else {
-      console.log('error submit!', fields)
-    }
   })
 }
 
@@ -90,7 +85,6 @@ function getCaptcha() {
   request('/hulk-auth/oauth/captcha', {
   })
     .then((res) => {
-      console.log(res)
       captcha.value = res.image
       ruleForm.codeKey = res.key
     })

@@ -8,7 +8,7 @@ export interface FormData {
 }
 
 const emit = defineEmits<{
-  'next-step': [FormData]
+  nextStep: [FormData]
 }>()
 const formRef = ref<FormInstance>()
 const formData = reactive<FormData>({
@@ -42,7 +42,7 @@ async function handleSubmit() {
 
   try {
     await formRef.value.validate()
-    emit('next-step', formData)
+    emit('nextStep', formData)
   }
   catch (error) {
     console.error('表单验证失败:', error)

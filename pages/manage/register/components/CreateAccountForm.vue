@@ -1,31 +1,33 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
+import { SmsType } from '~/enums/common'
 
 export interface FormData {
-  username: string
+  adminAccount: string
   password: string
   phone: string
-  verifyCode: string
+  smsCode: string
 }
 
 const emit = defineEmits<{
-  'next-step': [FormData]
+  nextStep: [FormData]
 }>()
 const formRef = ref<FormInstance>()
 const countdown = ref(60)
 const isCountingDown = ref(false)
 const countDownText = ref('发送验证码')
+const isLoading = ref(false)
 
 const formData = reactive<FormData>({
-  username: '',
+  adminAccount: '',
   password: '',
   phone: '',
-  verifyCode: '',
+  smsCode: '',
 })
 
 const rules = reactive<FormRules>({
-  username: [
+  adminAccount: [
     { required: true, message: '请输入账号', trigger: 'blur' },
   ],
   password: [
@@ -36,7 +38,7 @@ const rules = reactive<FormRules>({
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' },
   ],
-  verifyCode: [
+  smsCode: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { len: 6, message: '验证码长度应为6位', trigger: 'blur' },
   ],
@@ -56,14 +58,29 @@ function startCountDown() {
   }, 1000)
 }
 
-async function sendVerifyCode() {
+async function sendSmsCode() {
+  if (isLoading.value)
+    return
+
   try {
-    // 在这里添加发送验证码的逻辑
+    isLoading.value = true
     await formRef.value?.validateField('phone')
+    await request('/enterprise/sendSms', {
+      method: 'POST',
+      body: {
+        phone: formData.phone,
+        type: SmsType.REGISTER,
+      },
+    })
+    ElMessage.success('验证码已发送')
     startCountDown()
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (error) {
     // 手机号验证失败
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
@@ -71,15 +88,9 @@ async function handleSubmit() {
   if (!formRef.value)
     return
 
-  try {
-    await formRef.value.validate()
-    // 表单验证通过，在这里添加提交逻辑
-    emit('next-step', formData)
-    console.log('Form submitted:', formData)
-  }
-  catch (error) {
-    console.error('Form validation failed')
-  }
+  await formRef.value.validate()
+  // 表单验证通过，在这里添加提交逻辑
+  emit('nextStep', formData)
 }
 </script>
 
@@ -91,9 +102,9 @@ async function handleSubmit() {
     label-width="110px"
     class="account-form"
   >
-    <el-form-item label="账号：" prop="username">
+    <el-form-item label="账号：" prop="adminAccount">
       <el-input
-        v-model="formData.username"
+        v-model="formData.adminAccount"
         placeholder="请输入账号"
       />
     </el-form-item>
@@ -114,16 +125,17 @@ async function handleSubmit() {
       />
     </el-form-item>
 
-    <el-form-item label="短信验证码：" prop="verifyCode">
+    <el-form-item label="短信验证码：" prop="smsCode">
       <div class="verify-code">
         <el-input
-          v-model="formData.verifyCode"
+          v-model="formData.smsCode"
           placeholder="请输入验证码"
         />
         <el-button
           type="primary"
+          :loading="isLoading"
           :disabled="isCountingDown"
-          @click="sendVerifyCode"
+          @click="sendSmsCode"
         >
           {{ countDownText }}
         </el-button>
