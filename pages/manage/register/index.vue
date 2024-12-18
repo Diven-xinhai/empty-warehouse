@@ -2,8 +2,7 @@
 import type { FormData as CreateAccountFormData } from './components/CreateAccountForm.vue'
 import type { InfoFormData } from './components/InfoForm.vue'
 import StepIndicator from '@/components/AppSteps/index.vue'
-import CryptoJS from 'crypto-js'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import CreateAccountForm from './components/CreateAccountForm.vue'
 import InfoForm from './components/InfoForm.vue'
 
@@ -11,6 +10,7 @@ interface FormDataAll extends InfoFormData, CreateAccountFormData {
 }
 const currentStep = ref(1)
 const formDataAll = ref<FormDataAll>({} as FormDataAll)
+const isSubmitLoading = ref(false)
 
 function handleNextStep(formData: InfoFormData | CreateAccountFormData, step: number) {
   // 合并表单数据
@@ -20,11 +20,13 @@ function handleNextStep(formData: InfoFormData | CreateAccountFormData, step: nu
   }
 
   if (step === 2) {
+    isSubmitLoading.value = true
     request('/enterprise/register', {
       method: 'POST',
       body: formDataAll.value,
     }).then(() => {
       currentStep.value++
+      isSubmitLoading.value = false
     })
   }
   else {
@@ -46,7 +48,7 @@ function handleNextStep(formData: InfoFormData | CreateAccountFormData, step: nu
             :current-step="currentStep"
           />
           <InfoForm v-if="currentStep === 1" @next-step="handleNextStep($event, 1)" />
-          <CreateAccountForm v-else-if="currentStep === 2" @next-step="handleNextStep($event, 2)" />
+          <CreateAccountForm v-else-if="currentStep === 2" :isSubmitLoading="isSubmitLoading" @next-step="handleNextStep($event, 2)" />
           <div v-else class="flex flex-col items-center mt-20px">
             <img class="mb-20px" src="@/assets/images/login/success.png" alt="">
             注册成功

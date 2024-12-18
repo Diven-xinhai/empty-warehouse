@@ -11,20 +11,20 @@ export interface InfoFormData {
   organImg: string
   legalPersonName: string
   legalPersonNum: string
-  cityCode: string
-  districtCode: string
+  city: string
+  district: string
   enterpriseAddress: string
   agreement: boolean
 }
 
-interface CityItem {
+interface ResCityItem {
   code: string
   dictKey: string
   dictValue: string
   id: string
   parentId: string
 }
-interface RegionListItem {
+interface ResRegionListItem {
   cityCode: string
   cityName: string
   code: string
@@ -49,8 +49,8 @@ const form = reactive<InfoFormData>({
   organImg: '',
   legalPersonName: '',
   legalPersonNum: '',
-  cityCode: '',
-  districtCode: '',
+  city: '',
+  district: '',
   enterpriseAddress: '',
   agreement: false,
 })
@@ -90,8 +90,8 @@ const rules = reactive<FormRules>({
   organImg: [{ required: true, message: '请上传营业执照', trigger: 'change' }],
   legalPersonName: [{ required: true, message: '请输入法定代表人姓名', trigger: 'blur' }],
   legalPersonNum: [{ required: true, message: '请输入法定代表人身份证号', trigger: 'blur' }],
-  cityCode: [{ required: true, message: '请选择所在地区', trigger: 'change' }],
-  districtCode: [{ required: true, message: '请选择区县', trigger: 'change' }],
+  city: [{ required: true, message: '请选择所在地区', trigger: 'change' }],
+  district: [{ required: true, message: '请选择区县', trigger: 'change' }],
   enterpriseAddress: [{ required: true, message: '请输入详细地址', trigger: 'blur' }],
   agreement: [{ required: true, message: '请阅读并同意用户注册协议', trigger: 'change' }],
 })
@@ -106,8 +106,8 @@ const enterpriseTypes = [
   { label: '其他', value: '0' },
 ]
 
-const cityList = ref<CityItem[]>([])
-const regionList = ref<RegionListItem[]>([])
+const cityList = ref<ResCityItem[]>([])
+const regionList = ref<ResRegionListItem[]>([])
 
 async function submitForm(formEl: FormInstance | undefined) {
   if (!formEl)
@@ -144,11 +144,13 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 }
 
 function changeCity(value: any) {
-  form.districtCode = ''
+  form.district = ''
+  const valueName = cityList.value.find((item: ResCityItem) => item.dictValue === value)?.dictKey
+  
   request('/hulk-system/region/select/region', {
     method: 'get',
     params: {
-      code: value,
+      code: valueName,
     },
     headers: {
       Authorization: `Basic ${CryptoJS.enc.Base64.stringify(
@@ -244,7 +246,7 @@ onMounted(() => {
       <div class="flex w-100% gap-4">
         <el-form-item prop="cityCode" class="mb-0 flex-1">
           <el-select
-            v-model="form.cityCode"
+            v-model="form.city"
             placeholder="请选择地市"
             class="w-full"
             @change="changeCity"
@@ -253,17 +255,17 @@ onMounted(() => {
               v-for="item in cityList"
               :key="item.id"
               :label="item.dictValue"
-              :value="item.dictKey"
+              :value="item.dictValue"
             />
           </el-select>
         </el-form-item>
-        <el-form-item prop="districtCode" class="mb-0 flex-1">
-          <el-select v-model="form.districtCode" placeholder="区县" class="w-full">
+        <el-form-item prop="district" class="mb-0 flex-1">
+          <el-select v-model="form.district" placeholder="区县" class="w-full">
             <el-option
               v-for="item in regionList"
               :key="item.id"
               :label="item.districtName"
-              :value="item.districtCode"
+              :value="item.districtName"
             />
           </el-select>
         </el-form-item>

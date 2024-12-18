@@ -1,4 +1,7 @@
 <script setup lang="tsx">
+import { ArrowDown } from '@element-plus/icons-vue'
+import CryptoJS from 'crypto-js'
+
 interface MenuItem {
   name: string
   url: string
@@ -91,20 +94,30 @@ onMounted(() => {
   userInfo.value = getLocalStore('userInfo')
 })
 function handleLogout() {
-  // request("/iot-auth/oauth/logout", {
-  //   headers: {
-  //     Authorization: `Basic ${CryptoJS.enc.Base64.stringify(
-  //       CryptoJS.enc.Utf8.parse("falcon:falcon_secret")
-  //     )}`,
-  //   },
-  //   errorAlert: false,
-  // }).finally(() => {
-  //   userInfo.value = undefined;
-  //   setLocalStore({ name: "token", content: "" });
-  //   setLocalStore({ name: "userInfo", content: "" });
-  //   setLocalStore({ name: "tenantId", content: "" });
-  //   sessionStorage.clear();
-  // });
+  request("/hulk-auth/oauth/logout", {
+    headers: {
+      Authorization: `Basic ${CryptoJS.enc.Base64.stringify(
+        CryptoJS.enc.Utf8.parse("falcon:falcon_secret")
+      )}`,
+    },
+    errorAlert: false,
+  }).finally(() => {
+    userInfo.value = undefined;
+    setLocalStore({ name: "token", content: "" });
+    setLocalStore({ name: "userInfo", content: "" });
+    setLocalStore({ name: "tenantId", content: "" });
+  });
+}
+
+function handleCommand(command: string) {
+  switch (command) {
+    case '1':
+      toPage('/manage/account')
+      break
+    case '2':
+      handleLogout()
+      break
+  }
 }
 </script>
 
@@ -158,18 +171,29 @@ function handleLogout() {
             [切换城市]
           </div>
         </div>
+        
         <div
-        v-if="!userInfo"
+          v-if="!userInfo"
           cursor-pointer
           class="flex items-center justify-center"
           @click="toPage('/manage/login')"
         >
           登录/注册
         </div>
-        <div cursor-pointer
-        class="flex items-center justify-center">
-          {{ userInfo?.nick_name }}
-        </div>
+        <el-dropdown v-else placement="top-end"  @command="handleCommand">
+          <span class="el-dropdown-link color-#fff">
+            {{ userInfo?.nick_name }}
+            <el-icon class="el-icon--right">
+              <arrow-down />
+            </el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="1">账号中心</el-dropdown-item>
+              <el-dropdown-item command="2">退出登陆</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
   </div>
@@ -237,15 +261,10 @@ function handleLogout() {
 </template>
 
 <style lang="scss" scoped>
-.light {
-  background: #fff;
-
-  .light-logo {
-    display: block;
-  }
-
-  .menu {
-    color: #34324d;
-  }
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
 }
 </style>

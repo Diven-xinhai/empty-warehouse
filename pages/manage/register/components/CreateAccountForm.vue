@@ -10,6 +10,12 @@ export interface FormData {
   smsCode: string
 }
 
+withDefaults(defineProps<{
+  isSubmitLoading: boolean
+}>(), {
+  isSubmitLoading: false
+})
+
 const emit = defineEmits<{
   nextStep: [FormData]
 }>()
@@ -146,6 +152,7 @@ async function handleSubmit() {
       <el-button
         type="primary"
         class="submit-btn"
+        :loading="isSubmitLoading"
         @click="handleSubmit"
       >
         下一步
