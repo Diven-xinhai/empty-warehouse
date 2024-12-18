@@ -122,12 +122,34 @@ const { requestList, supplyDemandList } = useSupplyDemandList()
 </script>
 
 <template>
-  <div class="pt-70px relative">
+  <div class="mt-70px relative">
     <NuxtImg
       width="100%"
       :height="388"
       src="/images/pc/supply-demand/banner.png"
     />
+    <div class="absolute top-62px left-20%">
+      <div text="#030718 48px">
+        供需对接
+      </div>
+      <div
+        text="#1C6AE1 18px"
+        class="inline-block mt-15px px-5px py-10px box-border border-0 border-t-1px border-b-1px border-solid border-#3F80E4"
+      >
+        满足需求 - 合作桥梁 - 资源对接
+      </div>
+      <div text="#030718 20px" class="mt-10px w-500px">
+        我们致力于成为需求满足与合作桥梁的角色，为资源供需有效对接提供支持
+      </div>
+      <NuxtLink to="/supply-demand/publish" class="hover:no-underline w-124px">
+        <div
+          class="group relative overflow-hidden flex items-center justify-center mt-20px rounded-4px w-124px leading-44px text-white text-20px bg-[linear-gradient(90deg,#68A9FD_0%,#3A7BE1_100%)] cursor-pointer select-none"
+        >
+          <span class="i-tabler:arrow-right absolute -left-50px group-hover:left-10px transition-all" />
+          发 布
+        </div>
+      </NuxtLink>
+    </div>
   </div>
 
   <div class="bg-#F8F9FB">
