@@ -19,15 +19,13 @@ const menus = ref<MenuItem[]>([
   },
   {
     name: '供需对接',
-    url: '/2',
+    url: '/supply-demand',
   },
   {
     name: '成果发布',
     url: '/3',
   },
 ])
-
-
 
 const route = useRoute()
 // 跳转子菜单页面时，关闭子菜单列表
@@ -138,7 +136,13 @@ function handleCommand(command: string) {
       济南市都市圈产业协作创新发展公共服务平台
     </div>
     <div w="50%" max-w="500px" flex>
-      <div v-for="item in menus" :key="item.url" w-full flex="1" class="menu">
+      <div
+        v-for="item in menus"
+        :key="item.url"
+        w-full
+        flex="1"
+        class="menu"
+      >
         <div
           text="16px center"
           h-full
@@ -248,7 +252,12 @@ function handleCommand(command: string) {
     class="lg:hidden block"
     :class="openMenu ? 'left-0' : '-left-100%'"
   >
-    <div h="70px" px="20px" box-border flex="~ items-center justify-between">
+    <div
+      h="70px"
+      px="20px"
+      box-border
+      flex="~ items-center justify-between"
+    >
       <div>
         济南市都市圈产业协作创新发展公共服务平台
       </div>

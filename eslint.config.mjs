@@ -5,6 +5,7 @@ export default autfu({
     'deploy/**',
   ],
   rules: {
+    'ts/no-use-before-define': ['off'],
     'vue/max-attributes-per-line': ['error', {
       singleline: {
         max: 3,
