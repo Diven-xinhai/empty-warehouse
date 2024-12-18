@@ -1,6 +1,6 @@
 export default defineEventHandler(() => {
   const cities = [
-    '全部',
+    '全部城市',
     '济南',
     '淄博',
     '泰安',

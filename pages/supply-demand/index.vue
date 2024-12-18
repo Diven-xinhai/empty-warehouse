@@ -31,6 +31,16 @@ function useListQueryParams() {
 
   function handleSelectedFilterContext(value: string, type: keyof typeof selectedFilterContext.value) {
     const values = selectedFilterContext.value[type]
+
+    if (type === 'cities') {
+      if (value === categories.value?.cities[0]) {
+        return values.splice(0, values.length, value)
+      }
+      else if (values.at(0) === categories.value?.cities[0]) {
+        values.splice(0, 1)
+      }
+    }
+
     const index = values.indexOf(value)
     if (~index) {
       values.splice(index, 1)
@@ -176,7 +186,12 @@ const { requestList, supplyDemandList } = useSupplyDemandList()
             flex="! items-center"
             class="bg-#3F80E4 bg-opacity-16 px-10px box-border text-#3F80E4 leading-28px rounded-2px"
           >
-            {{ item }} <span class="i-tabler:x ml-5px cursor-pointer" @click="removeSelectedFilterContext(item)" />
+            {{ item }}
+            <span
+              v-if="item !== categories?.cities[0]"
+              class="i-tabler:x ml-5px cursor-pointer"
+              @click="removeSelectedFilterContext(item)"
+            />
           </div>
         </div>
         <div v-else class="leading-28px text-14px text-gray">
