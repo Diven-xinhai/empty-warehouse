@@ -175,18 +175,31 @@ function initData() {
   })
 }
 
+const windowWidth = ref(window.innerWidth)
+
+function handleResize() {
+  windowWidth.value = window.innerWidth
+}
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+
 onMounted(() => {
   initData()
+  window.addEventListener('resize', handleResize)
 })
 </script>
 
 <template>
   <el-form
     ref="ruleFormRef"
+    :label-position="windowWidth < 1024 ? 'top' : 'right'"
     :model="form"
     :rules="rules"
     label-width="170px"
-    class="lg:w-500px w-350px"
+    class="lg:w-500px w-90%"
   >
     <el-form-item label="单位企业类型：" prop="enterpriseType" required>
       <el-select v-model="form.enterpriseType" placeholder="请选择单位企业类型" class="w-full">
@@ -284,14 +297,15 @@ onMounted(() => {
     <!-- <el-form-item prop="agreement"> -->
     <el-checkbox v-model="form.agreement">
       我已阅读并同意
-      <NuxtLink style="color: #1A69DE;" class="font-normal hover:text-#4080f9 break-word" to="">
-        《济南市都市圈产业协作创新发展公共服务平台用户注册协议》
-      </NuxtLink>
+      
     </el-checkbox>
+    <NuxtLink style="color: #1A69DE;" class="font-normal hover:text-#4080f9 break-word" to="">
+        《济南市都市圈产业协作创新发展公共服务平台用户注册协议》
+    </NuxtLink>
     <!-- </el-form-item> -->
 
     <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
+      <el-button class="lg:w-150px w-full mt-20px" type="primary" @click="submitForm(ruleFormRef)">
         信息认证
       </el-button>
     </el-form-item>

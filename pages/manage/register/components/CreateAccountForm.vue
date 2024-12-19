@@ -98,11 +98,26 @@ async function handleSubmit() {
   // 表单验证通过，在这里添加提交逻辑
   emit('nextStep', formData)
 }
+
+const windowWidth = ref(window.innerWidth)
+
+function handleResize() {
+  windowWidth.value = window.innerWidth
+}
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
 </script>
 
 <template>
   <el-form
     ref="formRef"
+    :label-position="windowWidth < 1024 ? 'top' : 'right'"
     :model="formData"
     :rules="rules"
     label-width="110px"
@@ -148,16 +163,14 @@ async function handleSubmit() {
       </div>
     </el-form-item>
 
-    <el-form-item>
-      <el-button
-        type="primary"
-        class="submit-btn"
-        :loading="isSubmitLoading"
-        @click="handleSubmit"
-      >
-        下一步
-      </el-button>
-    </el-form-item>
+    <el-button
+      type="primary"
+      class="submit-btn"
+      :loading="isSubmitLoading"
+      @click="handleSubmit"
+    >
+      下一步
+    </el-button>
   </el-form>
 </template>
 

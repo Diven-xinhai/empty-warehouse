@@ -95,10 +95,11 @@ getCaptcha()
 </script>
 
 <template>
-  <div class="login-wrap flex items-center justify-center">
-    <div class="w-900px flex">
-      <NuxtImg class="lg:block hidden w-1/2" src="images/pc/login/left.png" />
-      <div class="lg:w-1/2 lg:m-0 w-90% m-l-5% bg-#fff p-40px box-border">
+  <div class="login-wrap flex lg:items-center justify-center bg-#fff">
+    <div class="w-900px lg:flex flex-wrap">
+      <NuxtImg class="lg:block hidden lg:w-1/2 w-100%" src="images/pc/login/left.png" />
+      <NuxtImg class="lg:hidden block lg:w-1/2 w-100%" src="images/mb/login/left.png" />
+      <div class="lg:w-1/2 lg:m-0 lg:relative lg:top-0 lg:left-0 lg:rounded-0 bg-#fff w-100%  p-40px box-border absolute top-280px left-0 rounded-15px">
         <div class="flex justify-between mt-10px">
           <div
             v-for="(item, index) in loginTypeList"
@@ -197,12 +198,18 @@ getCaptcha()
 .login-wrap {
   width: 100vw;
   height: 100vh;
-  background-image: url('/public/images/pc/login/bg.png');
-  background-repeat: no-repeat;
-  background-size: cover;
+  
 
   .login-type-item:not(:last-child) {
     border-right: 1px solid #e6e6e6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .login-wrap {
+    background-image: url('/public/images/pc/login/bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 }
 </style>

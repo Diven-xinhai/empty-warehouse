@@ -229,6 +229,7 @@ function handleCommand(command: string) {
         v-else
         cursor-pointer
         mr="20px"
+        @click="toPage('/manage/login')"
       >
         登录/注册
       </div>

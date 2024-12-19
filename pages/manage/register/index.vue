@@ -37,16 +37,18 @@ function handleNextStep(formData: InfoFormData | CreateAccountFormData, step: nu
 
 <template>
   <div class="register-wrap flex items-center justify-center">
-    <div class="lg:w-900px lg:p-60px flex flex-col items-center bg-white box-border">
-      <div class="lg:w-90% bg-#fff w-95% box-border">
+    <div class="lg:w-900px lg:p-60px w-100% py-20px flex flex-col items-center bg-white box-border">
+      <div class="lg:w-90% bg-#fff w-90% box-border">
         <div class="text-24px">
           用户注册
         </div>
-        <div class="lg:p-20px w-100% mt-30px border-1px border-solid border-#e6e6e6 box-border flex flex-col items-center">
-          <StepIndicator
-            :steps="['信息认证', '创建用户', '注册成功']"
-            :current-step="currentStep"
-          />
+        <div class="lg:p-20px w-100% mt-30px p-10px pr-15px border-1px border-solid border-#e6e6e6 box-border flex flex-col items-center">
+          <div class="lg:block hidden">
+            <StepIndicator
+              :steps="['信息认证', '创建用户', '注册成功']"
+              :current-step="currentStep"
+            />
+          </div>
           <InfoForm v-if="currentStep === 1" @next-step="handleNextStep($event, 1)" />
           <CreateAccountForm v-else-if="currentStep === 2" :isSubmitLoading="isSubmitLoading" @next-step="handleNextStep($event, 2)" />
           <div v-else class="flex flex-col items-center mt-20px">
