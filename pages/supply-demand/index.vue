@@ -32,6 +32,7 @@ function useListQueryParams() {
   function handleSelectedFilterContext(value: string, type: keyof typeof selectedFilterContext.value) {
     const values = selectedFilterContext.value[type]
 
+    // 城市选择全部时移除其他城市筛选条件，选择具体城市时移除全部筛选条件
     if (type === 'cities') {
       if (value === categories.value?.cities[0]) {
         return values.splice(0, values.length, value)
@@ -39,6 +40,12 @@ function useListQueryParams() {
       else if (values.at(0) === categories.value?.cities[0]) {
         values.splice(0, 1)
       }
+    }
+
+    // 服务大厅，取消选择解决方案服务时，移除行业和价格筛选条件
+    if (sceneType.value === 'service' && value === '解决方案') {
+      selectedFilterContext.value.industries = []
+      selectedFilterContext.value.prices = []
     }
 
     const index = values.indexOf(value)

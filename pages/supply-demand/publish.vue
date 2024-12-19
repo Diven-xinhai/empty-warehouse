@@ -1,16 +1,69 @@
 <script setup lang="ts">
 const sceneType = ref<'service' | 'demand'>('demand')
 
-const publishLoading = ref(false)
+function useInitializationData() {
+  const { data: supplyDemandCategories } = useAsyncData(() => $fetch('/api/supply-demand/categories'))
+
+  const UPLOAD_FILE_URL = `${import.meta.env.VITE_GLOB_API_URL}/hulk-resource/oss/endpoint/put-file`
+  const TOKEN = ref('')
+  onMounted(() => TOKEN.value = `bearer ${getLocalStore('token')}`)
+
+  async function lazyLoadCityData(node: any, resolve: any) {
+    const { level, data } = node
+
+    if (level === 0) {
+      return request('/hulk-system/dict/dictionary?code=city')
+        .then(res => resolve(res.data))
+    }
+    else if (level === 1) {
+      return request(`/hulk-system/region/select?code=${data.dictKey}`)
+        .then(res => resolve(res.data.map((item: any) => ({
+          leaf: true,
+          dictValue: item.name,
+        }))))
+    }
+    resolve()
+  }
+
+  const userInfo = ref<any>()
+  onMounted(() => {
+    userInfo.value = getLocalStore('userInfo')
+  })
+
+  return {
+    lazyLoadCityData,
+    userInfo,
+    supplyDemandCategories,
+    UPLOAD_FILE_URL,
+    TOKEN,
+  }
+}
+const initializationData = useInitializationData()
+
+const demandFormRef = useTemplateRef<{ validate: () => Promise<any> }>('demandFormRef')
 
 const router = useRouter()
-function handlePublish() {
-  publishLoading.value = true
-  setTimeout(() => {
-    publishLoading.value = false
+const publishLoading = ref(false)
+async function handlePublish() {
+  try {
+    const values = await demandFormRef.value?.validate()
+    publishLoading.value = true
+    await request('/demand/save', {
+      method: 'POST',
+      body: {
+        ...values.value,
+        city: values.value.area[0],
+        district: values.value.area[1],
+        enterpriseName: initializationData.userInfo.value.enterprise_name,
+      },
+    })
     router.push('/supply-demand')
     ElMessage.success('发布成功')
-  }, 2000)
+  }
+  catch {}
+  finally {
+    publishLoading.value = false
+  }
 }
 </script>
 
@@ -46,19 +99,14 @@ function handlePublish() {
           </div>
         </div>
 
-        <div class="mt-28px flex items-center">
-          <div class="w-4px h-28px bg-#3F80E4 rounded-2px" />
-          <div class="text-#030718 text-20px ml-16px">
-            服务内容
-          </div>
-        </div>
-
-        <div class="mt-28px flex items-center">
-          <div class="w-4px h-28px bg-#3F80E4 rounded-2px" />
-          <div class="text-#030718 text-20px ml-16px">
-            服务补充
-          </div>
-        </div>
+        <!-- 需求表单 -->
+        <SupplyDemandForm
+          v-if="sceneType === 'demand'"
+          ref="demandFormRef"
+          :initialization-data="initializationData"
+        />
+        <!-- 服务表单 -->
+        <SupplyDemandServiceForm v-else />
 
         <div
           text="white"
@@ -92,5 +140,11 @@ function handlePublish() {
     color: white;
     background: linear-gradient( 90deg, #68A9FD 0%, #3A7BE1 100%);
   }
+}
+
+:deep(.el-upload--picture-card),
+:deep(.el-upload-list__item) {
+  width: 100px;
+  height: 100px;
 }
 </style>
